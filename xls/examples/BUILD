@@ -79,11 +79,11 @@ cc_binary(
     name = "adler32_reference",
     srcs = ["adler32_reference.cc"],
     deps = [
+        "//xls/common:init_xls",
+        "//xls/common/logging",
         "@com_google_absl//absl/base",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/types:span",
-        "//xls/common:init_xls",
-        "//xls/common/logging",
     ],
 )
 
@@ -123,11 +123,11 @@ cc_binary(
     name = "crc32_reference",
     srcs = ["crc32_reference.cc"],
     deps = [
+        "//xls/common:init_xls",
+        "//xls/common/logging",
         "@com_google_absl//absl/base",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/types:span",
-        "//xls/common:init_xls",
-        "//xls/common/logging",
     ],
 )
 
@@ -237,9 +237,9 @@ xls_dslx_library(
     name = "sobel_filter_dslx",
     srcs = ["sobel_filter.x"],
     deps = [
+        "//third_party/xls_go_math:fpsqrt_32_dslx",
         "//xls/modules:fp32_add_2_dslx",
         "//xls/modules:fp32_mul_2_dslx",
-        "//third_party/xls_go_math:fpsqrt_32_dslx",
     ],
 )
 
@@ -268,9 +268,6 @@ cc_library(
         "//xls/examples:adler32.opt.ir",
     ],
     deps = [
-        "@com_google_absl//absl/memory",
-        "@com_google_absl//absl/status:statusor",
-        "@com_google_absl//absl/strings",
         "//xls/common/file:filesystem",
         "//xls/common/file:get_runfile_path",
         "//xls/common/file:path",
@@ -279,6 +276,9 @@ cc_library(
         "//xls/ir",
         "//xls/ir:function_builder",
         "//xls/ir:ir_parser",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings",
     ],
 )
 
@@ -287,10 +287,6 @@ cc_library(
     srcs = ["proc_fir_filter.cc"],
     hdrs = ["proc_fir_filter.h"],
     deps = [
-        "@com_google_absl//absl/status",
-        "@com_google_absl//absl/status:statusor",
-        "@com_google_absl//absl/strings:str_format",
-        "@com_google_absl//absl/types:optional",
         "//xls/common/status:status_macros",
         "//xls/ir",
         "//xls/ir:bits",
@@ -300,6 +296,10 @@ cc_library(
         "//xls/ir:op",
         "//xls/ir:source_location",
         "//xls/ir:value_helpers",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings:str_format",
+        "@com_google_absl//absl/types:optional",
     ],
 )
 
@@ -308,8 +308,6 @@ cc_test(
     srcs = ["matmul_4x4_test.cc"],
     data = ["matmul_4x4.ir"],
     deps = [
-        "@com_google_absl//absl/status",
-        "@com_google_absl//absl/status:statusor",
         "//xls/common:init_xls",
         "//xls/common:xls_gunit_main",
         "//xls/common/file:filesystem",
@@ -321,6 +319,8 @@ cc_test(
         "//xls/ir:bits",
         "//xls/ir:ir_parser",
         "//xls/ir:value",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
         "@com_google_googletest//:gtest",
     ],
 )
@@ -330,8 +330,6 @@ cc_test(
     srcs = ["proc_fir_filter_test.cc"],
     deps = [
         ":proc_fir_filter",
-        "@com_google_absl//absl/status:statusor",
-        "@com_google_absl//absl/strings",
         "//xls/common:xls_gunit_main",
         "//xls/common/logging",
         "//xls/common/status:matchers",
@@ -344,6 +342,8 @@ cc_test(
         "//xls/ir:ir_matcher",
         "//xls/ir:ir_scanner",
         "//xls/ir:ir_test_base",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings",
         "@com_google_googletest//:gtest",
     ],
 )
@@ -395,6 +395,33 @@ synthesize_rtl(
     deps = [
         ":find_index_5000ps_model_unit_verilog",
     ],
+)
+
+xls_dslx_opt_ir(
+    name = "top_proc0",
+    srcs = ["top_proc.x"],
+    dslx_top = "Top0",
+    ir_file = "top_proc0.ir",
+    opt_ir_file = "top_proc0.opt.ir",
+    tags = ["optonly"],
+)
+
+xls_dslx_opt_ir(
+    name = "top_proc1",
+    srcs = ["top_proc.x"],
+    dslx_top = "Top1",
+    ir_file = "top_proc1.ir",
+    opt_ir_file = "top_proc1.opt.ir",
+    tags = ["optonly"],
+)
+
+xls_dslx_opt_ir(
+    name = "top_proc2",
+    srcs = ["top_proc.x"],
+    dslx_top = "Top2",
+    ir_file = "top_proc2.ir",
+    opt_ir_file = "top_proc2.opt.ir",
+    tags = ["optonly"],
 )
 
 # TODO(cdleary): 2022-05-09 Get this target working as well, requires
